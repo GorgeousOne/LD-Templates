@@ -1,15 +1,15 @@
-
 class Stage {
 
-	constructor() {}
+	constructor() {
+	}
 
 	setTexture(texture) {
 		this.texture = texture;
 	}
 
 	display() {
-		
-		if(!this.texture)
+
+		if (!this.texture)
 			return;
 
 		image(this.texture, 0, 0);

@@ -1,11 +1,10 @@
-
 class BoundingBox {
 
-	constructor() {
+	constructor(pos, width, height) {
 
-		this.pos = createVector();
-		this.width = 0;
-		this.height = 0;
+		this.pos = pos.copy();
+		this.width = width;
+		this.height = height;
 	}
 
 	setSize(width, height) {
@@ -14,7 +13,7 @@ class BoundingBox {
 	}
 
 	setPos(pos) {
-		this.pos = pos;
+		this.pos = pos.copy();
 	}
 
 	move(dx, dy) {
@@ -22,14 +21,44 @@ class BoundingBox {
 	}
 
 	contains(vec) {
-		return vec.x >= this.pos.x && vec.x <= this.pos.x + this.width &&
-				vec.y >= this.pos.y && vec.y <= this.pos.x + this.height;
+		return vec.x > this.pos.x && vec.x < this.pos.x + this.width &&
+			vec.y > this.pos.y && vec.y < this.pos.y + this.height;
 	}
 
-	getCorners() {
+	getBound(dirX, dirY) {
+
+		if(dirX === -1)
+			return this.pos.x;
+		else if(dirX === 1)
+			return this.pos.x + this.width;
+		else if(dirY === -1)
+			return this.pos.y;
+		else if(dirY === 1)
+			return this.pos.y + this.height;
+		else
+			return undefined;
+	}
+
+
+	intersects(otherBox) {
+
+		for (let vertex of otherBox.getVertices()) {
+		    if (this.contains(vertex))
+		        return true;
+        }
+
+        for (let vertex of this.getVertices()) {
+            if (otherBox.contains(vertex))
+                return true;
+        }
+
+        return false;
+	}
+
+	getVertices() {
 
 		return [
-			this.pos.copy(), 
+			this.pos.copy(),
 			this.pos.copy().add(this.width, 0),
 			this.pos.copy().add(this.width, this.height),
 			this.pos.copy().add(0, this.height),
@@ -37,9 +66,6 @@ class BoundingBox {
 	}
 
 	display() {
-
-		stroke(255, 0, 0);
-		noFill();
 		rect(this.pos.x, this.pos.y, this.width, this.height);
 	}
 }
