@@ -3,7 +3,8 @@ new p5();
 let player;
 let level;
 let collisionHandler;
-let ledge;
+let camera;
+let text;
 
 function setup() {
 
@@ -12,52 +13,63 @@ function setup() {
 	noSmooth();
 	colorMode(RGB);
 
-	player = new Player(loadImage('../assets/genga.png', img => {
+	player = new Player(loadImage('assets/genga.png', img => {
 		player.setTexture(img);
 	}));
 
-	level = new Stage(loadImage('../assets/library.png', img => {
-		level.setTexture(img)
-		player.moveX(level.texture.width / 2);
-		player.moveY(level.texture.height * 1 / 9);
+	level = new Stage(loadImage('assets/library.png', img => {
+		level.setTexture(img);
+		player.setPos(level.texture.width / 2, 50);
+		camera.zoom = 2; //width / level.texture.width;
 	}));
 
-	playerCenter = createVector(width / 2, height * 8 / 9);
+	playerCenter = createVector(width / 2, height * 2 / 3);
 
-	ledge = new Ledge(createVector(400, 350), 100, 10);
+	let ledge = new Ledge(createVector(400, 350), 100, 10);
+	let floor = new Ledge(createVector(200, 450), 700, 10);
 
 	collisionHandler = new CollisionHandler();
-	//collisionHandler.addCollidable(player);
+	collisionHandler.addCollidable(level);
 	collisionHandler.addCollidable(ledge);
+	collisionHandler.addCollidable(floor);
 
-	//frameRate(20);
+	camera = new Camera();
+	camera.target = player;
+	camera.followTargetX = true;
+	camera.followTargetY = true;
+
 	stroke(255, 0, 0);
 	noFill();
+
+	for (let collidable of collisionHandler.collidables)
+		collidable.display();
+
+	text = new PixelText('hey sup! +-=()*|<>$'); //'abcdefghijklmnopq');
 }
 
 let playerCenter;
-let followPlayer = false;
+
 let speed = 2;
-let accY = 0.1;
+let accY = 0.2;
 
 function draw() {
 
-	background(0);
 	movePlayer();
+	player.physics();
 
-	if (followPlayer)
-		translate(playerCenter);
-
-	if (level.texture)
-		scale(width / level.texture.width);
-
-	if (followPlayer)
-		translate(p5.Vector.mult(player.pos, -1));
-
+	background(0);
+	camera.focus();
 
 	level.display();
-	ledge.display();
+
+	noFill();
+	stroke(255, 0, 0);
+
+	for (const collidable of collisionHandler.collidables)
+		collidable.display();
+
 	player.display();
+	text.display(createVector(400, 250), 200);
 }
 
 function movePlayer() {
@@ -72,12 +84,9 @@ function movePlayer() {
 		player.setMirrored(true);
 	}
 
-	if (keyIsDown(UP_ARROW)) {
-		player.velY -= 0.2;
-	}
-
-	if (keyIsDown(DOWN_ARROW))
-		player.moveY(speed);
+	if (keyIsDown(UP_ARROW))
+		if (player.isOnGround)
+			player.jump(7);
 }
 
 function windowResized() {

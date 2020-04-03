@@ -1,4 +1,3 @@
-
 class CollisionHandler {
 
 	constructor() {
@@ -12,9 +11,8 @@ class CollisionHandler {
 	getCollision(collidable) {
 
 		for (const other of this.collidables) {
-
-			if(collidable.getBounds().intersects(other.getBounds()))
-				return other.getBounds();
+			if (collidable.bounds.intersects(other.bounds))
+				return other.bounds;
 		}
 		return undefined;
 	}
