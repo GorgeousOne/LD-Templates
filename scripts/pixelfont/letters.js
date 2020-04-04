@@ -1,3 +1,5 @@
+
+const letterHeight = 9;
 const Letters = new Map();
 
 Letters.set(' ', new LetterExtent(16, 71, 3, 7))

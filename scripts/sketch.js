@@ -20,7 +20,7 @@ function setup() {
 	level = new Stage(loadImage('assets/library.png', img => {
 		level.setTexture(img);
 		player.setPos(level.texture.width / 2, 50);
-		camera.zoom = 2; //width / level.texture.width;
+		camera.zoom = width / level.texture.width;
 	}));
 
 	playerCenter = createVector(width / 2, height * 2 / 3);
@@ -44,7 +44,7 @@ function setup() {
 	for (let collidable of collisionHandler.collidables)
 		collidable.display();
 
-	text = new PixelText('hey sup! +-=()*|<>$'); //'abcdefghijklmnopq');
+	text = new TextBubble('Lets try to simply display a lot of words here and see the errors coming :D', 10);
 }
 
 let playerCenter;
@@ -69,7 +69,7 @@ function draw() {
 		collidable.display();
 
 	player.display();
-	text.display(createVector(400, 250), 200);
+	text.display(createVector(400, 250));
 }
 
 function movePlayer() {
