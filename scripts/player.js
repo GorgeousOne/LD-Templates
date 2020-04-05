@@ -1,73 +1,32 @@
-class Player {
+class Player extends Collidable{
 
 	constructor() {
-		this.pos = createVector();
-		this.bounds = new BoundingBox(this.pos, 0, 0);
-
-		this.velY = 0;
-		this.isOnGround = false;
+		super();
+		this.hasGravity = true;
 	}
 
 	setTexture(texture) {
 		this.texture = texture;
 
-		this.bounds.setPos(this.pos);
-		this.bounds.move(-texture.width / 2, -texture.height / 2);
-		this.bounds.setSize(texture.width, texture.height);
+		this.hitbox.setPos(this.pos);
+		this.hitbox.move(-texture.width / 2, -texture.height / 2);
+		this.hitbox.setSize(texture.width, texture.height);
+		this.isMovable = true;
 	}
 
 	setMirrored(bool) {
 		this.isMirrored = bool;
 	}
 
-	setPos(x, y) {
-		this.pos.add(x, y);
-		this.bounds.move(x, y);
-	}
+	jump(height) {
+		let newVelY = 0;
 
-	moveX(dx) {
-		this.pos.add(dx, 0);
-		this.bounds.move(dx, 0);
-
-		let otherBounds = collisionHandler.getCollision(this);
-
-		if (otherBounds !== undefined) {
-
-			let tooFar = otherBounds.getBoundX(-signum(dx)) - this.bounds.getBoundX(signum(dx));
-			this.pos.add(tooFar, 0);
-			this.bounds.move(tooFar, 0);
+		while (height > 0) {
+			height += newVelY;
+			newVelY -= gravity;
 		}
-	}
 
-	moveY(dy) {
-
-		this.pos.add(0, dy);
-		this.bounds.move(0, dy);
-		this.isOnGround = false;
-
-		let otherBounds = collisionHandler.getCollision(this);
-
-		if (otherBounds !== undefined) {
-
-			let signY = signum(dy);
-
-			let tooFar = otherBounds.getBoundY(-signY) - this.bounds.getBoundY(signY);
-			this.pos.add(0, tooFar);
-			this.bounds.move(0, tooFar);
-			this.velY = 0;
-
-			if (signY === 1)
-				this.isOnGround = true;
-		}
-	}
-
-	jump(velocity) {
-		this.velY = -abs(velocity);
-	}
-
-	physics() {
-		this.velY = constrain(this.velY + accY, -10, 10);
-		this.moveY(this.velY);
+		this.velY = newVelY;
 	}
 
 	display() {
@@ -87,6 +46,6 @@ class Player {
 
 		translate(-this.pos.x, -this.pos.y);
 
-		this.bounds.display();
+		this.hitbox.display();
 	}
 }

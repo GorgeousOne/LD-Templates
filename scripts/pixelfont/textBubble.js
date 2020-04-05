@@ -41,17 +41,22 @@ class TextBubble {
 	}
 
 	createLines() {
+		this.bubbleWidth = max(this.bubbleWidth, this.widestWord(this.text) + 2 * this.paddingX);
 		this.textLines = this.getTextLines(this.text, this.bubbleWidth - 2 * this.paddingX);
-		this.bubbleWidth = max(this.bubbleWidth, this.getWidth(this.longestLine(this.textLines).trim()) + 2 * this.paddingX);
 		this.bubbleHeight = this.textLines.length * (letterHeight + this.lineSpacing) - this.lineSpacing + 2 * this.paddingY;
 	}
 
-	longestLine(lines) {
-		return [...lines].reduce(this.getLongerOne);
+	widestWord(text) {
+		let words = text.split(' ');
+		let wordWidths = words.map(function (word) {
+			return getWidth(word)
+		});
+
+		return wordWidths.reduce(this.greater);
 	}
 
-	getLongerOne(champ, contender) {
-		return (contender.length > champ.length) ? contender : champ;
+	greater(champ, contender) {
+		return (contender > champ) ? contender : champ;
 	}
 
 	getTextLines(text, widthLimit) {
@@ -62,7 +67,7 @@ class TextBubble {
 
 		for (let word of words) {
 
-			let wordWidth = this.getWidth(word + ' ');
+			let wordWidth = getWidth(word + ' ');
 
 			if (lineWidth === 0 || lineWidth + wordWidth > widthLimit) {
 				lines.push(word + ' ');
@@ -76,17 +81,5 @@ class TextBubble {
 			lineWidth += wordWidth;
 		}
 		return lines;
-	}
-
-	getWidth(word) {
-
-		let width = 0;
-
-		for (let i = 0; i < word.length; i++) {
-			if(i !== 0) width += 1;
-			width += LetterImages.get(word.charAt(i)).width;
-		}
-
-		return width;
 	}
 }

@@ -1,13 +1,12 @@
 class Stage {
 
 	constructor() {
-		this.bounds = new BoundingBox(createVector(), 1, 1);
+		this.hitbox = new HitBox(createVector(), 1, 1);
 	}
 
 	setTexture(texture) {
 		this.texture = texture;
-		this.bounds.setSize(texture.width, texture.height);
-		this.bounds.setInverted(true);
+		this.hitbox.setSize(texture.width, texture.height);
 	}
 
 	display() {
@@ -16,6 +15,5 @@ class Stage {
 			return;
 
 		image(this.texture, 0, 0);
-		this.bounds.display();
 	}
 }

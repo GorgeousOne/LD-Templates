@@ -1,15 +1,16 @@
-class Ledge {
+class Ledge extends Collidable{
 
 	constructor(pos, width, height) {
+		super();
 
-		this.pos = pos;
+		this.setPos(pos);
 		this.width = width;
 		this.height = height;
 
-		this.bounds = new BoundingBox(pos, width, height);
+		this.hitbox = new HitBox(pos, width, height);
 	}
 
 	display() {
-		this.bounds.display();
+		this.hitbox.display();
 	}
 }

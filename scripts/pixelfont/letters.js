@@ -81,9 +81,9 @@ Letters.set('(', new LetterExtent(50, 16, 2, 7));
 Letters.set(')', new LetterExtent(52, 16, 2, 7));
 Letters.set('|', new LetterExtent(54, 16, 1, 7));
 Letters.set('*', new LetterExtent(55, 16, 3, 7));
-Letters.set('<', new LetterExtent(58, 16, 4, 7));
-Letters.set('>', new LetterExtent(62, 16, 4, 7));
-Letters.set('$', new LetterExtent(66, 16, 5, 7));
+Letters.set('<', new LetterExtent(58, 16, 3, 7));
+Letters.set('>', new LetterExtent(61, 16, 3, 7));
+Letters.set('$', new LetterExtent(64, 16, 5, 7));
 
 
 

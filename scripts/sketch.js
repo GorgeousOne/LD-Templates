@@ -2,7 +2,7 @@ new p5();
 
 let player;
 let level;
-let collisionHandler;
+let physicsHandler;
 let camera;
 let text;
 
@@ -19,43 +19,36 @@ function setup() {
 
 	level = new Stage(loadImage('assets/library.png', img => {
 		level.setTexture(img);
-		player.setPos(level.texture.width / 2, 50);
-		camera.zoom = width / level.texture.width;
+		//camera.zoom = width / level.texture.width;
 	}));
-
-	playerCenter = createVector(width / 2, height * 2 / 3);
 
 	let ledge = new Ledge(createVector(400, 350), 100, 10);
 	let floor = new Ledge(createVector(200, 450), 700, 10);
+	let box = new Box(10, 10, 0);
 
-	collisionHandler = new CollisionHandler();
-	collisionHandler.addCollidable(level);
-	collisionHandler.addCollidable(ledge);
-	collisionHandler.addCollidable(floor);
+	player.setPos(450, 50);
+	box.setPos(350, 0);
+
+	physicsHandler = new PhysicsHandler();
+	physicsHandler.addCollidable(player);
+	physicsHandler.addCollidable(ledge);
+	physicsHandler.addCollidable(floor);
+	//physicsHandler.addCollidable(box);
 
 	camera = new Camera();
 	camera.target = player;
 	camera.followTargetX = true;
 	camera.followTargetY = true;
 
-	stroke(255, 0, 0);
-	noFill();
-
-	for (let collidable of collisionHandler.collidables)
-		collidable.display();
-
-	text = new TextBubble('Lets try to simply display a lot of words here and see the errors coming :D', 10);
+	text = new TextBubble('Normal words: iiiiiiiii mmmmmmmm > < >', 10);
 }
 
-let playerCenter;
-
 let speed = 2;
-let accY = 0.2;
 
 function draw() {
 
 	movePlayer();
-	player.physics();
+	physicsHandler.applyPhysics();
 
 	background(0);
 	camera.focus();
@@ -65,11 +58,10 @@ function draw() {
 	noFill();
 	stroke(255, 0, 0);
 
-	for (const collidable of collisionHandler.collidables)
-		collidable.display();
+	physicsHandler.collidables.forEach(collidable => collidable.hitbox.display());
 
 	player.display();
-	text.display(createVector(400, 250));
+	//text.display(createVector(400, 250));
 }
 
 function movePlayer() {
@@ -86,7 +78,7 @@ function movePlayer() {
 
 	if (keyIsDown(UP_ARROW))
 		if (player.isOnGround)
-			player.jump(7);
+			player.jump(100);
 }
 
 function windowResized() {
