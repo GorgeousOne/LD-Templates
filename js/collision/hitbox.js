@@ -1,4 +1,4 @@
-class HitBox {
+class Hitbox {
 
 	constructor(pos, width, height) {
 
@@ -13,8 +13,8 @@ class HitBox {
 		this.height = height;
 	}
 
-	setPos(pos) {
-		this.pos = pos.copy();
+	setPos(x, y) {
+		this.pos.set(x, y);
 	}
 
 	move(dx, dy) {

@@ -18,6 +18,18 @@ class Player extends Collidable {
 		this.isMirrored = bool;
 	}
 
+	walk(speed, maxSpeed) {
+
+		if (this.lastGround !== null)
+			speed *= this.lastGround.surfaceFriction ;
+
+		this.velX += speed;
+		this.velX = constrain(this.velX, -maxSpeed, maxSpeed);
+
+		this.setMirrored(speed > 0);
+		this.isWalking = true;
+	}
+
 	jump(height) {
 
 		let newVelY = 0;
@@ -35,11 +47,11 @@ class Player extends Collidable {
 		if (!this.sprite)
 			return;
 
-		translate(this.pos.x, this.pos.y);
+		translate(this.pos.x + this.hitbox.width/2, this.pos.y + this.hitbox.height/2);
+
 
 		if (this.isMirrored)
 			scale(-1, 1);
-
 
 		let tex = this.sprite.getFrame(this.isOnGround && this.isWalking ? Date.now() - startTime : 0);
 		image(tex, -tex.width / 2, -tex.height/2);
@@ -47,7 +59,7 @@ class Player extends Collidable {
 		if (this.isMirrored)
 			scale(-1, 1);
 
-		translate(-this.pos.x, -this.pos.y);
+		translate(-this.pos.x - this.hitbox.width/2, -this.pos.y - this.hitbox.height/2);
 
 		this.isWalking = false;
 	}

@@ -7,7 +7,7 @@ class Ledge extends Collidable {
 		this.width = width;
 		this.height = height;
 
-		this.hitbox = new HitBox(pos, width, height);
+		this.hitbox = new Hitbox(pos, width, height);
 	}
 
 	display() {

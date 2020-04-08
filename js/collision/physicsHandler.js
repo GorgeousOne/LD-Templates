@@ -1,4 +1,4 @@
-const gravity = 0.2;
+const gravity = 0.1;
 const maxVel = 50;
 
 class PhysicsHandler {
@@ -14,22 +14,24 @@ class PhysicsHandler {
 	applyPhysics() {
 
 		for (let collidable of this.collidables) {
-			if (collidable.hasGravity) {
+
+			if (collidable.hasGravity)
 				collidable.velY = constrain(collidable.velY + gravity, -maxVel, maxVel);
-				collidable.moveY(collidable.velY);
-			}
+
+			collidable.updateX();
+			collidable.updateY();
 		}
 	}
 
 	getCollision(collidable) {
 
 		for (const other of this.collidables) {
+
 			if (other === collidable)
 				continue;
 
-			if (collidable.hitbox.intersects(other.hitbox))
+			if(collidable.hitbox.intersects(other.hitbox))
 				return other;
 		}
-		return undefined;
 	}
 }

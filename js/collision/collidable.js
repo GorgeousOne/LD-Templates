@@ -3,74 +3,107 @@ class Collidable {
 	constructor(width, height) {
 
 		this.pos = createVector();
-		this.hitbox = new HitBox(this.pos, width, height);
+		this.hitbox = new Hitbox(this.pos, width, height);
 
-		this.hasGravity = false;
+		this.velX = 0;
 		this.velY = 0;
 
+		this.hasGravity = false;
 		this.isOnGround = false;
 		this.isMovable = false;
 
+		this.lastGround = null;
+
 		this.weight = 1;
+		this.surfaceFriction = 1; //0.02;
 	}
 
 	setPos(x, y) {
-		this.pos.add(x, y);
-		this.hitbox.move(x, y);
+		this.pos.set(x, y);
+		this.hitbox.setPos(x, y);
 	}
 
-	moveX(dx) {
+	updateX() {
+
+		//makes sure that it doesnt accidentally move away from others while not in motion
+		if(abs(this.velY) > 0.001) {
+			this.moveX(this.velX, true);
+
+			if (this.isOnGround)
+				this.velX *= 1 - this.lastGround.surfaceFriction;
+		}
+	}
+
+
+	moveX(dx, moveOthers) {
 
 		if (!this.isMovable)
-			return dx;
+			return 0;
 
-		this.pos.add(dx, 0);
-		this.hitbox.move(dx, 0);
-
+		this._translateX(dx);
 		let otherCollidable = physicsHandler.getCollision(this);
+
 		if (otherCollidable === undefined)
 			return dx;
 
 		let signX = signum(dx);
-		let otherBox = otherCollidable.hitbox;
-		let intersection = otherBox.getBoundX(-signX) - this.hitbox.getBoundX(signX);
+		let intersection = otherCollidable.hitbox.getBoundX(-signX) - this.hitbox.getBoundX(signX);
 
-		this.pos.add(intersection, 0);
-		this.hitbox.move(intersection, 0);
+		this._translateX(intersection);
 
-		if (!otherCollidable.isMovable)
+		if (!otherCollidable.isMovable || !moveOthers) {
+			this.velX = 0;
 			return dx + intersection;
+		}
 
-		let impulseX = this.weight / (otherCollidable.weight + this.weight) * -intersection;
-		let actualMovementX = otherCollidable.moveX(impulseX);
+		let impulseX = this.velX * (this.weight / otherCollidable.weight);
+		otherCollidable.velX = impulseX;
+		let actualMoveX = otherCollidable.moveX(impulseX, false);
 
-		this.pos.add(actualMovementX, 0);
-		this.hitbox.move(actualMovementX, 0);
-		return actualMovementX;
+		this.velX = actualMoveX;
+		this._translateX(actualMoveX);
+	}
+
+	updateY() {
+
+		if(abs(this.velY) > 0.001) {
+			this.isOnGround = false;
+			this.moveY(this.velY);
+		}
 	}
 
 	moveY(dy) {
 
-		this.pos.add(0, dy);
-		this.hitbox.move(0, dy);
-		this.isOnGround = false;
+		if (!this.isMovable)
+			return 0;
 
+		this._translateY(dy);
 		let otherCollidable = physicsHandler.getCollision(this);
+
 		if (otherCollidable === undefined)
 			return dy;
 
 		let signY = signum(dy);
-		let otherBox = otherCollidable.hitbox;
-		let intersection = otherBox.getBoundY(-signY) - this.hitbox.getBoundY(signY);
+		let intersection = otherCollidable.hitbox.getBoundY(-signY) - this.hitbox.getBoundY(signY);
 
-		this.pos.add(0, intersection);
-		this.hitbox.move(0, intersection);
-
+		this._translateY(intersection);
 		this.velY = 0;
 
-		if (signY === 1)
+		if (signY === 1) {
 			this.isOnGround = true;
+			this.lastGround = otherCollidable;
+		}
 
 		return dy + intersection;
+	}
+
+	_translateX(dx) {
+		this.pos.add(dx, 0);
+		this.hitbox.move(dx, 0);
+	}
+
+	_translateY(dy) {
+		this.pos.add(0, dy);
+		this.hitbox.move(0, dy);
 	}
 }
