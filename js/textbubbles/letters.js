@@ -86,8 +86,6 @@ Letters.set('$', new LetterExtent(64, 16, 5, 7));
 
 const LetterImages = new Map();
 
-loadImage('js/textbubbles/pixel-font.min.png', img => this.loadLetters(img));
-
 function loadLetters(img) {
 
 	for (let [char, extent] of Letters.entries())

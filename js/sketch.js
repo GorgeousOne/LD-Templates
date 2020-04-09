@@ -17,6 +17,8 @@ function setup() {
 	noSmooth();
 	colorMode(RGB);
 
+	loadImage('js/textbubbles/pixel-font.min.png', img => this.loadLetters(img));
+	
 	player = new Player(20, 22);
 	player.setPos(450, 310);
 
