@@ -32,7 +32,7 @@ Letters.set('a', new LetterExtent(0, 7, 4, 7));
 Letters.set('b', new LetterExtent(4, 7, 4, 7));
 Letters.set('c', new LetterExtent(8, 7, 3, 7));
 Letters.set('d', new LetterExtent(11, 7, 4, 7));
-Letters.set('e', new LetterExtent(15, 7, 4, 8));
+Letters.set('e', new LetterExtent(15, 7, 4, 7));
 Letters.set('f', new LetterExtent(19, 7, 3, 7));
 Letters.set('g', new LetterExtent(22, 7, 4, 9));
 Letters.set('h', new LetterExtent(26, 7, 4, 7));
@@ -84,6 +84,27 @@ Letters.set('<', new LetterExtent(58, 16, 3, 7));
 Letters.set('>', new LetterExtent(61, 16, 3, 7));
 Letters.set('$', new LetterExtent(64, 16, 5, 7));
 
+const LetterImages = new Map();
+
+loadImage('js/textbubbles/pixel-font.min.png', img => this.loadLetters(img));
+
+function loadLetters(img) {
+
+	for (let [char, extent] of Letters.entries())
+		LetterImages.set(char, img.get(extent.x, extent.y, extent.w, extent.h))
+}
+
+function getWidth(word) {
+
+	let width = 0;
+
+	for (let i = 0; i < word.length; i++) {
+		if (i !== 0) width += 1;
+		width += Letters.get(word.charAt(i)).w;
+	}
+
+	return width;
+}
 
 
 

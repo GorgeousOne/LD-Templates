@@ -1,18 +1,29 @@
-function loadTexFile(filePath) {
+
+function loadSprite(spritePath, texPath) {
+
+	
+}
+
+
+function loadTexFile(filePath, callback) {
 
 	let result = null;
 	let xmlhttp = new XMLHttpRequest();
 
-	xmlhttp.open("GET", filePath, false);
+	xmlhttp.open("GET", filePath, true);
+
+	xmlhttp.onload = function () {
+
+		if (xmlhttp.status === 200)
+			result = xmlhttp.responseText;
+
+		callback(result);
+	};
+
 	xmlhttp.send();
-
-	if (xmlhttp.status === 200)
-		result = xmlhttp.responseText;
-
-	return result;
 }
 
-function createSprite(textFile, spriteSheet) {
+function createSprite(spriteSheet, textFile) {
 
 	let lines = textFile.split(/\r?\n/);
 

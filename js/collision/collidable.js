@@ -1,6 +1,6 @@
 class Collidable {
 
-	constructor(width, height) {
+	constructor(width, height, hasGravity = false, surfaceFriction = 1) {
 
 		this.pos = createVector();
 		this.hitbox = new Hitbox(this.pos, width, height);
@@ -8,14 +8,11 @@ class Collidable {
 		this.velX = 0;
 		this.velY = 0;
 
-		this.hasGravity = false;
-		this.isOnGround = false;
-		this.isMovable = false;
+		this.hasGravity = hasGravity;
+		this.surfaceFriction = surfaceFriction;
 
-		this.lastGround = null;
-
-		this.weight = 1;
-		this.surfaceFriction = 1; //0.02;
+		this._isOnGround = false;
+		this._lastGround = null;
 	}
 
 	setPos(x, y) {
@@ -24,21 +21,17 @@ class Collidable {
 	}
 
 	updateX() {
-
 		//makes sure that it doesnt accidentally move away from others while not in motion
 		if(abs(this.velY) > 0.001) {
-			this.moveX(this.velX, true);
+			this.moveX(this.velX);
 
-			if (this.isOnGround)
-				this.velX *= 1 - this.lastGround.surfaceFriction;
+			if (this._isOnGround)
+				this.velX *= 1 - this._lastGround.surfaceFriction;
 		}
 	}
 
 
-	moveX(dx, moveOthers) {
-
-		if (!this.isMovable)
-			return 0;
+	moveX(dx) {
 
 		this._translateX(dx);
 		let otherCollidable = physicsHandler.getCollision(this);
@@ -50,32 +43,17 @@ class Collidable {
 		let intersection = otherCollidable.hitbox.getBoundX(-signX) - this.hitbox.getBoundX(signX);
 
 		this._translateX(intersection);
-
-		if (!otherCollidable.isMovable || !moveOthers) {
-			this.velX = 0;
-			return dx + intersection;
-		}
-
-		let impulseX = this.velX * (this.weight / otherCollidable.weight);
-		otherCollidable.velX = impulseX;
-		let actualMoveX = otherCollidable.moveX(impulseX, false);
-
-		this.velX = actualMoveX;
-		this._translateX(actualMoveX);
 	}
 
 	updateY() {
 
 		if(abs(this.velY) > 0.001) {
-			this.isOnGround = false;
+			this._isOnGround = false;
 			this.moveY(this.velY);
 		}
 	}
 
 	moveY(dy) {
-
-		if (!this.isMovable)
-			return 0;
 
 		this._translateY(dy);
 		let otherCollidable = physicsHandler.getCollision(this);
@@ -90,8 +68,8 @@ class Collidable {
 		this.velY = 0;
 
 		if (signY === 1) {
-			this.isOnGround = true;
-			this.lastGround = otherCollidable;
+			this._isOnGround = true;
+			this._lastGround = otherCollidable;
 		}
 
 		return dy + intersection;

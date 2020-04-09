@@ -1,7 +1,7 @@
 class Camera {
 
-	constructor() {
-		this.target = undefined;
+	constructor(target = null) {
+		this.target = target;
 
 		this.pos = createVector();
 		this.focusOffset = createVector();
@@ -22,10 +22,12 @@ class Camera {
 
 	focus() {
 
-		if(this.followTargetX)
-			this.pos.x = this.target.pos.x;
-		if(this.followTargetY)
-			this.pos.y = this.target.pos.y;
+		if(this.target !== null) {
+			if(this.followTargetX)
+				this.pos.x = this.target.pos.x;
+			if(this.followTargetY)
+				this.pos.y = this.target.pos.y;
+		}
 
 		translate(width/2, height/2);
 		translate(-this.focusOffset.x * width, -this.focusOffset.y * height);

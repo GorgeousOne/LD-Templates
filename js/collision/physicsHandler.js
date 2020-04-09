@@ -1,4 +1,4 @@
-const gravity = 0.1;
+const gravity = 0.2;
 const maxVel = 50;
 
 class PhysicsHandler {
