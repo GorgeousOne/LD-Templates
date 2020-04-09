@@ -31,7 +31,7 @@ function setup() {
 	});
 
 	level = new Stage();
-	loadImage('assets/library.png', img => level.setTexture(img);
+	loadImage('assets/library.png', img => level.setTexture(img));
 
 	physicsHandler = new PhysicsHandler();
 	physicsHandler.addCollidable(player);
@@ -43,7 +43,7 @@ function setup() {
 	camera.followTargetY = true;
 	camera.zoom = 1.5;
 
-	gustav = new NPC();
+	// gustav = new NPC();
 
 	text = new TextBubble('Normal words with more are less e\'s in it: iiiiiiiii mmmmmmmm > < >', 10, color(255, 0, 0), color(128, 0, 0));
 }
