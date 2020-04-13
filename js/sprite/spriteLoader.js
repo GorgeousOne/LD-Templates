@@ -1,13 +1,19 @@
+function loadSprite(directory, spriteName, callback) {
 
-function loadSprite(spritePath, texPath) {
+	let spritePath = directory + "/" + spriteName + ".png";
+	let texPath = directory + "/" + spriteName + ".txt";
 
-	
+	loadImage(spritePath, spriteSheet => {
+		loadTexFile(loadTexFile(texPath, texFile => {
+			callback(createSprite(spriteSheet, texFile));
+		}));
+	});
 }
 
 
 function loadTexFile(filePath, callback) {
 
-	let result = null;
+	let fileContent = null;
 	let xmlhttp = new XMLHttpRequest();
 
 	xmlhttp.open("GET", filePath, true);
@@ -15,17 +21,17 @@ function loadTexFile(filePath, callback) {
 	xmlhttp.onload = function () {
 
 		if (xmlhttp.status === 200)
-			result = xmlhttp.responseText;
+			fileContent = xmlhttp.responseText;
 
-		callback(result);
+		callback(fileContent);
 	};
 
 	xmlhttp.send();
 }
 
-function createSprite(spriteSheet, textFile) {
+function createSprite(spriteSheet, texFile) {
 
-	let lines = textFile.split(/\r?\n/);
+	let lines = texFile.split(/\r?\n/);
 
 	if (lines.length < 2) {
 		console.log('no frame coordinates defined in tex file.');

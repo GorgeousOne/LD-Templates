@@ -1,6 +1,9 @@
 const gravity = 0.2;
 const maxVel = 50;
 
+const speed = 2;
+const maxSpeed = 2;
+
 class PhysicsHandler {
 
 	constructor() {
@@ -12,6 +15,8 @@ class PhysicsHandler {
 	}
 
 	applyPhysics() {
+
+		this.movePlayer();
 
 		for (let collidable of this.collidables) {
 
@@ -25,13 +30,37 @@ class PhysicsHandler {
 
 	getCollision(collidable) {
 
-		for (const other of this.collidables) {
+		for (let other of this.collidables) {
 
 			if (other === collidable)
 				continue;
 
-			if(collidable.hitbox.intersects(other.hitbox))
+			if (collidable.hitbox.intersects(other.hitbox))
 				return other;
 		}
 	}
+
+	movePlayer() {
+
+		if(player.isTalking)
+			return;
+
+		if (keyIsDown(LEFT_ARROW))
+			player.walk(-speed, maxSpeed);
+
+		if (keyIsDown(RIGHT_ARROW))
+			player.walk(speed, maxSpeed);
+
+		if (keyIsDown(UP_ARROW))
+			player.jump(110);
+	}
+}
+
+function keyReleased() {
+
+	if(player.isTalking)
+		return;
+
+	if (keyCode === UP_ARROW)
+		player.hasJumpedOnce = false;
 }

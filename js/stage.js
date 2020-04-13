@@ -1,12 +1,10 @@
 class Stage {
 
 	constructor() {
-		this.hitbox = new Hitbox(createVector(), 1, 1);
 	}
 
 	setTexture(texture) {
 		this.texture = texture;
-		this.hitbox.setSize(texture.width, texture.height);
 	}
 
 	display() {

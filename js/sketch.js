@@ -4,9 +4,11 @@ let player;
 let level;
 let physicsHandler;
 let camera;
-let text;
 
-let gustav;
+let npcs;
+let npcTalkingTo;
+
+let ui;
 
 const startTime = Date.now();
 
@@ -15,22 +17,14 @@ function setup() {
 	createCanvas(windowWidth, windowHeight, P2D);
 	fullscreen();
 	noSmooth();
-	colorMode(RGB);
+	colorMode(HSB);
 
-	loadImage('js/textbubbles/pixel-font.min.png', img => this.loadLetters(img));
-	
+	loadImage('js/dialog/pixel-font.min.png', img => this.loadLetters(img));
+
 	player = new Player(20, 22);
 	player.setPos(450, 310);
 
-	loadImage('assets/gengar-walking.png', img => {
-
-		loadTexFile('assets/gengar-walking.txt', texFile => {
-
-			let sprite = createSprite(img, texFile);
-			player.setTexture(sprite);
-
-		})
-	});
+	loadSprite('assets', 'gengar-walking', sprite => player.setTexture(sprite));
 
 	level = new Stage();
 	loadImage('assets/library.png', img => level.setTexture(img));
@@ -43,54 +37,47 @@ function setup() {
 	camera = new Camera(player);
 	camera.followTargetX = true;
 	camera.followTargetY = true;
-	camera.zoom = 1.5;
+	camera.zoom = 3;
 
-	// gustav = new NPC();
+	ui = new UI();
+	let button = new Button(50, 50);
+	// button.onClick = function () {
+	// 	text.textColor = color(random(255), 255, 128);
+	// };
 
-	text = new TextBubble('Normal words with more are less e\'s in it: iiiiiiiii mmmmmmmm > < >', 10, color(255, 0, 0), color(128, 0, 0));
+	loadImage('assets/key.png', img => button.setTexture(img));
+	ui.addButtons(button);
+
+	let hunter = new NPC(20, 40);
+	hunter.setDialog(new Dialog("Hello, curious traveller! What are you doing in such a dangerous place? You should look for a safe place for the night. The sun is already standing low, hurry up!", 2, 400, 2));
+	hunter.setPos(450, 310);
+	loadImage('assets/hunter.png', img => hunter.setTexture(img));
+
+	npcs = [];
+	npcs.push(hunter);
 }
-
 
 function draw() {
 
-	movePlayer();
 	physicsHandler.applyPhysics();
 
+	push();
 	background(0);
 	camera.focus();
 
 	level.display();
+	physicsHandler.collidables.forEach(collidable => collidable.hitbox.display());
+	npcs.forEach(npc => npc.display());
 
-	noFill();
-	stroke(255, 0, 0);
-
-	physicsHandler.collidables.forEach(collidable => {
-		// if(collidable !== player)
-			collidable.hitbox.display()
-	});
-
-	text.display(createVector(400, 250));
 	player.display();
-}
 
-let speed = 2;
-let maxSpeed = 2;
+	if (npcTalkingTo && !npcTalkingTo.hitbox.intersects(player.hitbox)) {
+		npcTalkingTo.stopTalking();
+		npcTalkingTo = undefined;
+	}
 
-function movePlayer() {
-
-	if (keyIsDown(LEFT_ARROW))
-		player.walk(-speed, maxSpeed);
-
-	if (keyIsDown(RIGHT_ARROW))
-		player.walk(speed, maxSpeed);
-
-	if (keyIsDown(UP_ARROW))
-		player.jump(110);
-}
-
-function keyReleased() {
-	if(keyCode === UP_ARROW)
-		player.hasJumpedOnce = false;
+	pop();
+	ui.display();
 }
 
 function windowResized() {
@@ -101,4 +88,30 @@ function signum(f) {
 	if (f > 0) return 1;
 	if (f < 0) return -1;
 	return 0;
+}
+
+function mouseClicked() {
+	ui.onMouseClick();
+}
+
+function mouseMoved() {
+	ui.onMouseMove();
+}
+
+function keyPressed() {
+
+	if (key !== 'e')
+		return;
+
+	if (npcTalkingTo) {
+		npcTalkingTo.talk();
+		return;
+	}
+
+	for (let npc of npcs) {
+		if (npc.hitbox.intersects(player.hitbox)) {
+			npcTalkingTo = npc;
+			npcTalkingTo.talk();
+		}
+	}
 }

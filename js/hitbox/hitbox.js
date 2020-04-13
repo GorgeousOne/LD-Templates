@@ -1,11 +1,10 @@
 class Hitbox {
 
-	constructor(pos, width, height) {
+	constructor(width, height) {
 
-		this.pos = pos.copy();
+		this.pos = createVector();
 		this.width = width;
 		this.height = height;
-		this.outline = color(255, 0, 0)
 	}
 
 	setSize(width, height) {
@@ -14,6 +13,10 @@ class Hitbox {
 	}
 
 	setPos(x, y) {
+
+		if (!this.pos)
+			this.pos = createVector();
+
 		this.pos.set(x, y);
 	}
 
@@ -35,6 +38,10 @@ class Hitbox {
 
 	maxY() {
 		return this.pos.y + this.height;
+	}
+
+	contains(x, y) {
+		return this.containsX(x) && this.containsY(y);
 	}
 
 	intersects(otherBox) {
@@ -74,9 +81,11 @@ class Hitbox {
 
 	display() {
 
-		noFill();
-		stroke(this.outline);
+		if (!this.pos)
+			this.pos = createVector();
 
+		noFill();
+		stroke(color(0, 255, 0));
 		rect(this.pos.x, this.pos.y, this.width, this.height);
 	}
 }

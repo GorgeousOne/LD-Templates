@@ -3,7 +3,7 @@ class Collidable {
 	constructor(width, height, hasGravity = false, surfaceFriction = 1) {
 
 		this.pos = createVector();
-		this.hitbox = new Hitbox(this.pos, width, height);
+		this.hitbox = new Hitbox(width, height);
 
 		this.velX = 0;
 		this.velY = 0;
@@ -12,7 +12,6 @@ class Collidable {
 		this.surfaceFriction = surfaceFriction;
 
 		this._isOnGround = false;
-		this._lastGround = null;
 	}
 
 	setPos(x, y) {
@@ -22,7 +21,7 @@ class Collidable {
 
 	updateX() {
 		//makes sure that it doesnt accidentally move away from others while not in motion
-		if(abs(this.velY) > 0.001) {
+		if (abs(this.velY) > 0.001) {
 			this.moveX(this.velX);
 
 			if (this._isOnGround)
@@ -47,7 +46,7 @@ class Collidable {
 
 	updateY() {
 
-		if(abs(this.velY) > 0.001) {
+		if (abs(this.velY) > 0.001) {
 			this._isOnGround = false;
 			this.moveY(this.velY);
 		}

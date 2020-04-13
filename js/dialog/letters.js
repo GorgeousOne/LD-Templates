@@ -92,13 +92,15 @@ function loadLetters(img) {
 		LetterImages.set(char, img.get(extent.x, extent.y, extent.w, extent.h))
 }
 
-function getWidth(word) {
+function getWidth(word, fontSize = 1) {
 
 	let width = 0;
 
 	for (let i = 0; i < word.length; i++) {
-		if (i !== 0) width += 1;
-		width += Letters.get(word.charAt(i)).w;
+
+		//add a pixel space between each letter
+		if (i !== 0) width += fontSize;
+		width += Letters.get(word.charAt(i)).w * fontSize;
 	}
 
 	return width;
