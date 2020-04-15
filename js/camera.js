@@ -9,7 +9,7 @@ class Camera {
 		this.followTargetX = false;
 		this.followTargetY = false;
 
-		//this.zoom = 1;
+		this.zoom = 1;
 	}
 
 	setPos(x, y) {
@@ -18,6 +18,14 @@ class Camera {
 
 	setOffset(relX, relY) {
 		this.focusOffset.set(relX, relY)
+	}
+
+	shake(strength, duration) {
+
+		this.isShaking = true;
+		this.shakeStrength = strength;
+		this.shakeDuration = duration;
+		this.shakeStart = Date.now();
 	}
 
 	focus() {
@@ -32,5 +40,24 @@ class Camera {
 		translate(width / 2 - this.focusOffset.x * width, height / 2 - this.focusOffset.y * height);
 		scale(this.zoom);
 		translate(-this.pos.x, -this.pos.y);
+
+		if(this.isShaking)
+			this.applyShake();
+	}
+
+	applyShake() {
+
+		let timeSinceStart = Date.now() - this.shakeStart;
+
+		if(timeSinceStart > this.shakeDuration) {
+			this.isShaking = false;
+			return;
+		}
+
+		// let currentStrength = (1 - (timeSinceStart / this.shakeDuration)) * this.shakeStrength;
+
+		let currentStrength = (1 - (timeSinceStart / this.shakeDuration));
+		currentStrength *= currentStrength * this.shakeStrength;
+		translate(random(-currentStrength, currentStrength), random(-currentStrength, currentStrength));
 	}
 }

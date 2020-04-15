@@ -21,7 +21,7 @@ function setup() {
 
 	loadImage('js/dialog/pixel-font.min.png', img => this.loadLetters(img));
 
-	player = new Player(20, 22);
+	player = new Player(20, 20);
 	player.setPos(450, 310);
 
 	loadSprite('assets', 'gengar-walking', sprite => player.setTexture(sprite));
@@ -41,9 +41,6 @@ function setup() {
 
 	ui = new UI();
 	let button = new Button(50, 50);
-	// button.onClick = function () {
-	// 	text.textColor = color(random(255), 255, 128);
-	// };
 
 	loadImage('assets/key.png', img => button.setTexture(img));
 	ui.addButtons(button);
