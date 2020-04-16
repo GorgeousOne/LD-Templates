@@ -75,7 +75,6 @@ class Player extends Collidable {
 			scale(-1, 1);
 
 		translate(-this.pos.x - this.hitbox.width / 2, -this.pos.y - this.hitbox.height / 2);
-
 		this.isWalking = false;
 	}
 }

@@ -1,7 +1,9 @@
 new p5();
 
+let spriteHandler;
+
 let player;
-let level;
+let stage;
 let physicsHandler;
 let camera;
 
@@ -12,6 +14,18 @@ let ui;
 
 const startTime = Date.now();
 
+function preload() {
+
+	spriteHandler = new SpriteHandler();
+	spriteHandler.loadImage('font', 'assets/pixel-font.min.png');
+
+	spriteHandler.loadImage('stage', 'assets/library.png');
+	spriteHandler.loadImage('key', 'assets/key.png');
+	spriteHandler.loadImage('hunter', 'assets/hunter.png');
+
+	spriteHandler.loadSprite('gengar-walking','assets', 'gengar-walking');
+}
+
 function setup() {
 
 	createCanvas(windowWidth, windowHeight, P2D);
@@ -19,15 +33,14 @@ function setup() {
 	noSmooth();
 	colorMode(HSB);
 
-	loadImage('js/dialog/pixel-font.min.png', img => this.loadLetters(img));
+	loadLetters(spriteHandler.getImage('font'));
 
 	player = new Player(20, 20);
 	player.setPos(450, 310);
+	player.setTexture(spriteHandler.getSprite('gengar-walking'));
 
-	loadSprite('assets', 'gengar-walking', sprite => player.setTexture(sprite));
-
-	level = new Stage();
-	loadImage('assets/library.png', img => level.setTexture(img));
+	stage = new Stage();
+	stage.setTexture(spriteHandler.getImage('stage'));
 
 	physicsHandler = new PhysicsHandler();
 	physicsHandler.addCollidable(player);
@@ -39,16 +52,16 @@ function setup() {
 	camera.followTargetY = true;
 	camera.zoom = 3;
 
-	ui = new UI();
 	let button = new Button(50, 50);
+	button.setTexture(spriteHandler.getImage('key'));
 
-	loadImage('assets/key.png', img => button.setTexture(img));
+	ui = new UI();
 	ui.addButtons(button);
 
 	let hunter = new NPC(20, 40);
 	hunter.setDialog(new Dialog("Hello, curious traveller! What are you doing in such a dangerous place? You should look for a safe place for the night. The sun is already standing low, hurry up!", 2, 400, 2));
 	hunter.setPos(450, 310);
-	loadImage('assets/hunter.png', img => hunter.setTexture(img));
+	hunter.setTexture(spriteHandler.getImage('hunter'));
 
 	npcs = [];
 	npcs.push(hunter);
@@ -62,7 +75,7 @@ function draw() {
 	background(0);
 	camera.focus();
 
-	level.display();
+	stage.display();
 	physicsHandler.collidables.forEach(collidable => collidable.hitbox.display());
 	npcs.forEach(npc => npc.display());
 
