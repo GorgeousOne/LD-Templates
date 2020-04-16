@@ -14,6 +14,8 @@ let ui;
 
 const startTime = Date.now();
 
+let bam;
+
 function preload() {
 
 	spriteHandler = new SpriteHandler();
@@ -24,6 +26,8 @@ function preload() {
 	spriteHandler.loadImage('hunter', 'assets/hunter.png');
 
 	spriteHandler.loadSprite('gengar-walking','assets', 'gengar-walking');
+
+	bam = loadSound('assets/BAMM.wav');
 }
 
 function setup() {

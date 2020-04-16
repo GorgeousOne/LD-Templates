@@ -53,8 +53,10 @@ class Player extends Collidable {
 
 		super.updateY();
 
-		if(wasMidAir && this.isOnGround && lastVelY / gravity >= 40)
-			camera.shake(3, 250);
+		if(wasMidAir && this.isOnGround && lastVelY / gravity >= 40) {
+			camera.shake(5, 250);
+			bam.play();
+		}
 	}
 
 	display() {

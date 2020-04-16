@@ -44,8 +44,8 @@ class TextBubble {
 		this.textGraphic = createGraphics(this.width, this.height);
 
 		this.textGraphic.noSmooth();
-		this.textGraphic.tint(this.textColor);
 		this.textGraphic.scale(this.fontSize);
+		this.textGraphic.tint(this.textColor);
 
 		let cursorPos = createVector(1, 1);
 
